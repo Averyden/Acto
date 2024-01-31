@@ -53,7 +53,6 @@ class toDoData():
 
     def createTables(self):
         c = self.db.cursor()
-
         try: 
             c.execute('''
             CREATE TABLE Actions (
