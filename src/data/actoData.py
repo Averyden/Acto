@@ -1,6 +1,6 @@
 import sqlite3
 
-class toDoData():
+class actoData():
     def __init__(self):
         self.db = sqlite3.connect("src/data/storage/data.db")
 
@@ -23,7 +23,6 @@ class toDoData():
                 print("CRITICAL ERROR: 5x86e4 INVALID STATE. \n ACTION MUST BE DELETED.")
                 #! Force user to manually remove the action, instead of making the user confused as to why their action randomly disappeared.
         elif actionState[0] == 1: #* If the state is set to "in progress"
-            c = self.db.cursor()
             c.execute('''UPDATE Actions SET state = 2 WHERE id = ?''', [toDoID])
             self.db.commit()
 
@@ -41,6 +40,7 @@ class toDoData():
         else:
             c.execute('''DELETE FROM Actions WHERE id = ?''', [actionID])
             print(f"Successfully deleted action {actionID}")
+            self.db.commit()
 
 
     def createAction(self, content="", deadline="", priority=0):

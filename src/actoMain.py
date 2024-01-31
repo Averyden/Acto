@@ -2,12 +2,12 @@ import sys
 sys.dont_write_bytecode = True
 
 import tkinter as tk
-from data.toDOData import toDoData
+from data.actoData import actoData
 
-data = toDoData()
+data = actoData()
 
 data.createTables()
-data.completeAction(1)
+data.deleteAction(1)
 
 class TkinterApp:
     def __init__(self):
