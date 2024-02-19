@@ -16,27 +16,73 @@ class TkinterApp(ttk.Frame):
     def __init__(self,master=None):
         ttk.Frame.__init__(self, master)
         self.placeholder = None
+
+        self.emptyStar = "☆"
+        self.fullStar = "★"
+        self.priorityRating = "0"
         
         #* Build the UI on load.
         self.buildStartUI()
 
     def buildUncompletedUI(self):
-        pass #* For uncompleted actions
-
-    
-    def buildCompletedUI(self):
-        self.dataPanel = tk.Frame(self)
-        self.butPanel = tk.Frame(self)
+        self.Ui = tk.Tk()
+        self.dataPanel = tk.Frame(self.Ui)
+        self.butPanel = tk.Frame(self.Ui)
         self.settingPanel = tk.Frame(self.butPanel)
 
         self.lblSelectedAction = tk.Label(self.butPanel, text="No currently selected action to modify.")
         self.lblSelectedAction.grid(row=1, column=2)
+
+        self.db_view = ttk.Treeview(self.data_panel, column=("column1", "column2", "column3", "column4", "column5"), show='headings')
+       # self.db_view.bind("<<TreeviewSelect>>", lambda event: self.onOrderSelect(self.db_view.item(self.db_view.selection())['values'][0]))
+        self.db_view.column("#1", width=70)
+        self.db_view.heading("#1", text="ID")
+        self.db_view.heading("#2", text="Action")
+        self.db_view.heading("#3", text="Deadline")
+        self.db_view.heading("#4", text="Priority")
+        self.db_view["displaycolumns"]=("column1", "column4", "column3", "column2")
+        ysb = ttk.Scrollbar(self.data_panel, command=self.db_view.yview, orient=tk.VERTICAL)
+        self.db_view.configure(yscrollcommand=ysb.set)
+        self.db_view.pack(side = tk.TOP)
 
         self.settingPanel.grid(row=2, column=0)
         
         self.dataPanel.pack(side = tk.TOP)
         self.butPanel.pack(side = tk.LEFT)
         self.pack()
+        self.Ui.mainloop()
+      
+        
+
+    
+    def buildCompletedUI(self):
+        self.Ui = tk.Tk()
+        self.dataPanel = tk.Frame(self.Ui)
+        self.butPanel = tk.Frame(self.Ui)
+        self.settingPanel = tk.Frame(self.butPanel)
+
+        self.lblSelectedAction = tk.Label(self.butPanel, text="No currently selected action to modify.")
+        self.lblSelectedAction.grid(row=1, column=2)
+
+        self.db_view = ttk.Treeview(self.dataPanel, column=("column1", "column2", "column3", "column4", "column5"), show='headings')
+       # self.db_view.bind("<<TreeviewSelect>>", lambda event: self.onOrderSelect(self.db_view.item(self.db_view.selection())['values'][0]))
+        self.db_view.column("#1", width=70)
+        self.db_view.heading("#1", text="ID")
+        self.db_view.heading("#2", text="Action")
+        self.db_view.heading("#3", text="Deadline")
+        self.db_view.heading("#4", text="Completed")
+        self.db_view["displaycolumns"]=("column1", "column2", "column3", "column4")
+        ysb = ttk.Scrollbar(self.dataPanel, command=self.db_view.yview, orient=tk.VERTICAL)
+        self.db_view.configure(yscrollcommand=ysb.set)
+        self.db_view.pack(side = tk.TOP)
+
+        self.settingPanel.grid(row=2, column=0)
+        
+        self.dataPanel.pack(side = tk.TOP)
+        self.butPanel.pack(side = tk.LEFT)
+        self.pack()
+        self.Ui.mainloop()
+        
 
 
 
@@ -65,7 +111,7 @@ class TkinterApp(ttk.Frame):
 #!    - Utilize a radio button to toggle between completed and uncompleted. 
 
 root = tk.Tk()
-root.geometry("800x500") #* temporary window size
+#root.geometry("800x500") #* temporary window size
 
 app = TkinterApp()
 app.master.title("Acto")
