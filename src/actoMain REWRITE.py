@@ -31,6 +31,9 @@ class TkinterApp(ttk.Frame):
         self.fullStar = "★"
         self.priorityRating = "0"
 
+    def updateLabels(self): #* Automatically run every time code is started so that things are added to the ma bobs
+        pass 
+
     def buildUncompletedUI(self):
         self.dataPanel = ttk.Frame(self.uncompletedTabFrame)
         self.butPanel = ttk.Frame(self.uncompletedTabFrame)
