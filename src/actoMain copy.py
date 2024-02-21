@@ -9,30 +9,37 @@ from data.actoData import actoData
 #? Maybe set window to a constant size?
 
 class TkinterApp(ttk.Frame):
-    def __init__(self,master=None):
-        ttk.Frame.__init__(self, master)
-        self.placeholder = None
+    def __init__(self,root):
+        self.root = root
+        self.root.title("Acto")
         self.data = actoData()
 
+        self.notebook = ttk.Notebook(self.root)
+        self.notebook.pack(fill="both", expand=True)
+
+        self.uncompletedTabFrame = ttk.Frame(self.notebook)
+        self.completedTabFrame = ttk.Frame(self.notebook)
+
+        self.notebook.add(self.uncompletedTabFrame, text="Uncompleted Actions")
+        self.notebook.add(self.completedTabFrame, text="Completed Actions")
+
+        self.buildCompletedUI()
+        self.buildUncompletedUI()
+
+        #* For priority
         self.emptyStar = "☆"
         self.fullStar = "★"
         self.priorityRating = "0"
-        
-        #* Build the start menu on load.
-        self.buildStartUI()
 
     def buildUncompletedUI(self):
-        self.Ui = tk.Tk()
-        self.dataPanel = ttk.Frame(self.Ui)
-        self.butPanel = ttk.Frame(self.Ui)
+        self.dataPanel = ttk.Frame(self.uncompletedTabFrame)
+        self.butPanel = ttk.Frame(self.uncompletedTabFrame)
         self.settingPanel = ttk.Frame(self.butPanel)
         self.lblActions = ttk.Label(self.butPanel, text = 'There are {} uncompleted Actions'.format(None))
         self.lblActions.grid(row = 0, column = 0)
         self.butUpdate = ttk.Button(self.butPanel, text = 'Edit Action', command=None)
-        self.butUpdate.grid(row = 1, column = 0)
-        self.butUpdate = ttk.Button(self.butPanel, text = 'Show completed Actions', command=self.buildCompletedUI)
         self.butUpdate.grid(row = 4, column = 0)
-
+       
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
         self.lblCurrentSelect.grid(row=0, column=4, columnspan=2, padx=25)
         self.butOpen = ttk.Button(self.butPanel, text="Open Action", command=None)
@@ -63,12 +70,9 @@ class TkinterApp(ttk.Frame):
         self.dataPanel.pack(side = tk.TOP)
         self.butPanel.pack(side = tk.LEFT)
         self.settingPanel.grid(row=2, column=2)
-        self.pack()
-        self.Ui.mainloop()
       
         
     def buildCreationUI(self):
-        self.Ui = tk.Tk()
 
 
         self.but_list = []
@@ -78,17 +82,15 @@ class TkinterApp(ttk.Frame):
             self.starButton.grid(row=0, column=i)
             self.but_list.append(self.starButton)
 
-        self.Ui.mainloop()
+
     
     def buildCompletedUI(self):
         self.Ui = tk.Tk()
-        self.dataPanel = ttk.Frame(self.Ui)
-        self.butPanel = ttk.Frame(self.Ui)
+        self.dataPanel = ttk.Frame(self.completedTabFrame)
+        self.butPanel = ttk.Frame(self.completedTabFrame)
         self.settingPanel = ttk.Frame(self.butPanel)
         self.lblActions = ttk.Label(self.butPanel, text = 'There are {} completed Actions'.format(None))
         self.lblActions.grid(row = 0, column = 0)
-        self.butUpdate = ttk.Button(self.butPanel, text = 'Show uncompleted Actions', command=self.buildUncompletedUI)
-        self.butUpdate.grid(row = 2, column = 0)
 
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
         self.lblCurrentSelect.grid(row=0, column=2, columnspan=2)
@@ -116,28 +118,6 @@ class TkinterApp(ttk.Frame):
         self.dataPanel.pack(side = tk.TOP)
         self.butPanel.pack(side = tk.LEFT)
         self.settingPanel.grid(row=2, column=2)
-        self.pack()
-        self.Ui.mainloop()
-        
-
-
-
-    def buildStartUI(self):
-        self.funny = tk.Frame(self)
-
-
-        self.labelMainText = tk.Label(self.funny, text="Select which menu to view.")
-        self.labelMainText.grid(row=0, columnspan=2)
-
-        self.btnCompleted = tk.Button(self.funny, text="Completed Actions", command=self.buildCompletedUI)
-        self.btnCompleted.grid(row=1, column=0)
-
-        self.btnUnCompleted = tk.Button(self.funny, text="Uncompleted Actions", command=self.buildUncompletedUI)
-        self.btnUnCompleted.grid(row=1, column=1)
-
-        self.funny.pack(side=tk.TOP)
-        self.pack()
-
 
 
 
@@ -146,7 +126,5 @@ class TkinterApp(ttk.Frame):
 
 root = tk.Tk()
 #root.geometry("800x500") #* temporary window size
-
-app = TkinterApp()
-app.master.title("Acto")
-app.mainloop()
+app = TkinterApp(root)
+root.mainloop()
