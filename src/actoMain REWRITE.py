@@ -96,13 +96,13 @@ class TkinterApp(ttk.Frame):
         self.lblActions.grid(row = 0, column = 0)
 
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
-        self.lblCurrentSelect.grid(row=0, column=2, columnspan=2)
+        self.lblCurrentSelect.grid(row=0, column=2, columnspan=2, padx=25)
         self.butOpen = ttk.Button(self.butPanel, text="Open Action", command=None)
         self.butOpen.grid(row = 1, column = 2, columnspan=2)
 
         
         self.butUncompleteAction = ttk.Button(self.butPanel, text = "Mark as uncompleted", command=None)
-        self.butUncompleteAction.grid(row=4, column=4,columnspan=4)
+        self.butUncompleteAction.grid(row=4, column=4,columnspan=4, padx=25)
          
    
 
