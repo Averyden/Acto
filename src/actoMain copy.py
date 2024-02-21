@@ -143,8 +143,6 @@ class TkinterApp(ttk.Frame):
 
 
 
-#TODO: (HAHA GET IT!)
-#!    - Utilize a radio button to toggle between completed and uncompleted. 
 
 root = tk.Tk()
 #root.geometry("800x500") #* temporary window size
