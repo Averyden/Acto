@@ -30,7 +30,7 @@ class TkinterApp(ttk.Frame):
         self.lblActions.grid(row = 0, column = 0)
         self.butUpdate = ttk.Button(self.butPanel, text = 'Edit Action', command=None)
         self.butUpdate.grid(row = 1, column = 0)
-        self.butUpdate = ttk.Button(self.butPanel, text = 'Show completed Actions', command=None)
+        self.butUpdate = ttk.Button(self.butPanel, text = 'Show completed Actions', command=self.buildCompletedUI)
         self.butUpdate.grid(row = 4, column = 0)
 
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
@@ -87,7 +87,7 @@ class TkinterApp(ttk.Frame):
         self.settingPanel = ttk.Frame(self.butPanel)
         self.lblActions = ttk.Label(self.butPanel, text = 'There are {} completed Actions'.format(None))
         self.lblActions.grid(row = 0, column = 0)
-        self.butUpdate = ttk.Button(self.butPanel, text = 'Show uncompleted Actions', command=None)
+        self.butUpdate = ttk.Button(self.butPanel, text = 'Show uncompleted Actions', command=self.buildUncompletedUI)
         self.butUpdate.grid(row = 2, column = 0)
 
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
@@ -103,6 +103,7 @@ class TkinterApp(ttk.Frame):
 
         self.db_view = ttk.Treeview(self.dataPanel, column=("column1", "column2", "column3", "column4"), show='headings')
         #self.db_view.bind("<ButtonRelease-1>", self.on_guitar_selected)
+        self.db_view.column("#1", width=30)
         self.db_view.heading("#1", text="ID")
         self.db_view.heading("#2", text="Action")
         self.db_view.heading("#3", text="Deadline")
