@@ -85,7 +85,7 @@ class TkinterApp(ttk.Frame):
 
     
     def buildCompletedUI(self):
-        self.Ui = tk.Tk()
+
         self.dataPanel = ttk.Frame(self.completedTabFrame)
         self.butPanel = ttk.Frame(self.completedTabFrame)
         self.settingPanel = ttk.Frame(self.butPanel)
