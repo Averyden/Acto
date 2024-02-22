@@ -41,9 +41,15 @@ class TkinterApp(ttk.Frame):
 
         self.updateLabels()
 
+
+    def onActionSelect(self, event):
+        curItem = self.db_view.item(self.db_view.focus())['values']
+        if len(curItem) > 0:
+            self.lblCurrentSelect.config(text = 'Currently selected action: {}'.format(curItem[0]))
       
-    def updateLabels(self): #* Automatically run every time code is started so that things are added to the ma bobs
-        l = self.data.getActionList()
+    def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
+        l = self.data.getUncompletedActionList()
+
         self.lblActions.config(text = 'There are {} uncompleted Actions'.format(len(l)))
         self.db_view.delete(*self.db_view.get_children())
         for a in l:
@@ -58,8 +64,8 @@ class TkinterApp(ttk.Frame):
         self.settingPanel = ttk.Frame(self.butPanel)
         self.lblActions = ttk.Label(self.butPanel, text = 'There are no uncompleted Actions')
         self.lblActions.grid(row = 0, column = 0)
-        self.butUpdate = ttk.Button(self.butPanel, text = 'Edit Action', command=None)
-        self.butUpdate.grid(row = 4, column = 0)
+        self.butDelete = ttk.Button(self.butPanel, text = 'Delete Action', command=self.data.deleteAction)
+        self.butDelete.grid(row = 4, column = 0)
        
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
         self.lblCurrentSelect.grid(row=0, column=4, columnspan=2, padx=25)
@@ -71,13 +77,13 @@ class TkinterApp(ttk.Frame):
         self.butNew.grid(row=4, column=2, columnspan = 2)
 
         
-        self.butCompleteActions = ttk.Button(self.butPanel, text = "Mark as uncompleted", command=None)
+        self.butCompleteActions = ttk.Button(self.butPanel, text = "Mark as completed", command=None)
         self.butCompleteActions.grid(row=4, column=4,columnspan=4)
          
    
 
         self.db_view = ttk.Treeview(self.dataPanel, column=("column1", "column2", "column3", "column4"), show='headings')
-        #self.db_view.bind("<ButtonRelease-1>", self.on_guitar_selected)
+        self.db_view.bind("<ButtonRelease-1>", self.onActionSelect)
         self.db_view.column("#1", width=30)
         self.db_view.heading("#1", text="ID")
         self.db_view.heading("#2", text="Action")
