@@ -1,12 +1,12 @@
 import sqlite3
 
 class Action():
-    def __init__(self, content, priority, Actionid, state):
+    def __init__(self, content, priority, state, actionID):
         self.content = content
         self.priority = priority
         # self.deadline
         self.state = state
-        self.id = Actionid
+        self.id = actionID
         
 
     def setId(self, id):
@@ -24,9 +24,9 @@ class actoData():
         c = self.db.cursor()
         c.execute('SELECT id, content, priority, state from Actions')
         Alist = []
-        for g in c:
-            action = Action(g[1],g[2],g[3])
-            action.set_id(g[0])
+        for a in c:
+            action = Action(a[1],a[2],a[3])
+            action.set_id(a[0])
             Alist.append(action)
         return Alist
 
