@@ -171,10 +171,6 @@ class TkinterApp(ttk.Frame):
         self.settingPanel.grid(row=2, column=2)
 
 
-
-
-
-
 root = tk.Tk()
 #root.geometry("800x500") #* temporary window size
 app = TkinterApp(root)
