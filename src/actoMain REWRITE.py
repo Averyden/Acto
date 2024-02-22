@@ -4,7 +4,6 @@ sys.dont_write_bytecode = True #* Don't write pycache.
 import tkinter as tk
 import tkinter.ttk as ttk
 from datetime import datetime
-from tkcalendar import DateEntry #* Exclusively for being able to handle dates and deadlines
 from data.actoData import actoData
 
 
@@ -86,24 +85,20 @@ class TkinterApp(ttk.Frame):
         
     def buildCreationUI(self):
         #* Variables for the action
-        self.deadline = None #! Set to none by default
-        self.priority = 0 #! Lowest by default
-        self.content = "" #! Empty by default
-
         self.actionContentEntry = ttk.Entry(self.createActionTabFrame)
         self.actionContentEntry.grid(row=1, column=0, columnspan=2)
 
-        self.lblDeadlineHeader = ttk.Label(self.createActionTabFrame, text="Set deadline (yyyy-mm-dd)")
-        self.lblDeadlineHeader.grid(row=2, column=0)
+        # self.lblDeadlineHeader = ttk.Label(self.createActionTabFrame, text="Set deadline (yyyy-mm-dd)")
+        # self.lblDeadlineHeader.grid(row=2, column=0)
 
         self.lblPriorityHeader = ttk.Label(self.createActionTabFrame, text="Set priority.")
         self.lblPriorityHeader.grid(row=2, column=1, columnspan=3, padx=125)
 
-        self.cal = DateEntry(self.createActionTabFrame, datePattern="yyyy-mm-dd")
-        self.cal.grid(row=3, column=0)
+        # self.deadlineEntry = ttk.Entry(self.createActionTabFrame)
+        # self.deadlineEntry.grid(row=3, column=1)
 
-        self.butSetDeadline = ttk.Button(self.createActionTabFrame, text="Set Deadline", command=self.setDeadline)
-        self.butSetDeadline.grid(row=4, column=0)
+        # self.butSetDeadline = ttk.Button(self.createActionTabFrame, text="Set Deadline", command=self.setDeadline)
+        # self.butSetDeadline.grid(row=4, column=0)
 
         self.slPriority = ttk.LabeledScale(self.createActionTabFrame, from_ = 0, to = 5)
         #self.scPris.config(showvalue=1)
@@ -113,23 +108,20 @@ class TkinterApp(ttk.Frame):
         self.createActionButton = ttk.Button(self.createActionTabFrame, text="Create Action", command=self.createAction)
         self.createActionButton.grid(row=5, column=0, columnspan=7)
 
-    def setDeadline(self):
-        # Set self.deadline to the date entered in the entry
-        deadline_str = self.deadlineEntry.get()
-        try:
-            self.deadline = datetime.strptime(deadline_str, '%Y-%m-%d').date()
-        except ValueError:
-            print("Invalid date format. Please enter date in yyyy-mm-dd format.")
-
-    def setStarRating(self, idx):
-        # Set self.priority based on the star button clicked
-        self.priority = idx + 1
+    # def setDeadline(self):
+    #     # Set self.deadline to the date entered in the entry
+    #     deadline_str = self.deadlineEntry.get()
+    #     try:
+    #         self.deadline = datetime.strptime(deadline_str, '%Y-%m-%d').date()
+    #     except ValueError:
+    #         print("Invalid date format. Please enter date in yyyy-mm-dd format.")
 
     def createAction(self):
         # Get content from entry
-        content = self.actionContentEntry.get()
+        self.content = self.actionContentEntry.get()
+        self.priority = int(self.slPriority.scale.get())
         # Call data's createAction method
-        self.data.createAction(content=content, deadline=self.deadline, priority=self.priority)
+        self.data.createAction(content=self.content, priority=self.priority) #*Deadlines are put on hold for an indefinete time.
 
 
     def buildCompletedUI(self):
