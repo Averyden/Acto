@@ -19,13 +19,23 @@ class actoData():
 
     
 
-    def getActionList(self):
+    def getCompletedActionList(self):
         c = self.db.cursor()
-        c.execute('SELECT id, content, priority, state from Actions')
+        c.execute('SELECT id, content, priority, state from Actions WHERE state = 2')
         Alist = []
         for a in c:
-            action = Action(a[1],a[2],a[3])
-            action.set_id(a[0])
+            action = Action(a[1],a[2], a[3])
+            action.setId(a[0])
+            Alist.append(action)
+        return Alist
+
+    def getUncompletedActionList(self):
+        c = self.db.cursor()
+        c.execute('SELECT id, content, priority, state from Actions WHERE state = 1')
+        Alist = []
+        for a in c:
+            action = Action(a[1],a[2], a[3])
+            action.setId(a[0])
             Alist.append(action)
         return Alist
 

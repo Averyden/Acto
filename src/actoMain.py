@@ -47,6 +47,12 @@ class TkinterApp(ttk.Frame):
         if len(curItem) > 0:
             self.lblCurrentSelect.config(text = 'Currently selected action: {}'.format(curItem[0]))
       
+    def deleteSelectedAction(self):
+        curItem = self.db_view.focus()
+        if len(self.db_view.item(curItem)['values']) >= 2:
+            self.data.deleteAction(self.db_view.item(curItem)['values'][0])
+        self.updateLabels()
+
     def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
         l = self.data.getUncompletedActionList()
 
@@ -64,7 +70,7 @@ class TkinterApp(ttk.Frame):
         self.settingPanel = ttk.Frame(self.butPanel)
         self.lblActions = ttk.Label(self.butPanel, text = 'There are no uncompleted Actions')
         self.lblActions.grid(row = 0, column = 0)
-        self.butDelete = ttk.Button(self.butPanel, text = 'Delete Action', command=self.data.deleteAction)
+        self.butDelete = ttk.Button(self.butPanel, text = 'Delete Action', command=self.deleteSelectedAction)
         self.butDelete.grid(row = 4, column = 0)
        
         self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
