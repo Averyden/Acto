@@ -1,5 +1,18 @@
 import sqlite3
 
+class Action():
+    def __init__(self, content, priority, Actionid, state):
+        self.content = content
+        self.priority = priority
+        # self.deadline
+        self.id = Actionid
+        self.state = state
+
+    def setId(self, id):
+        self.order_id = id
+
+
+
 class actoData():
     def __init__(self):
         self.db = sqlite3.connect("src/data/storage/data.db")
