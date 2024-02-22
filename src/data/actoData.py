@@ -5,8 +5,9 @@ class Action():
         self.content = content
         self.priority = priority
         # self.deadline
-        self.id = Actionid
         self.state = state
+        self.id = Actionid
+        
 
     def setId(self, id):
         self.order_id = id
@@ -18,6 +19,17 @@ class actoData():
         self.db = sqlite3.connect("src/data/storage/data.db")
 
     
+
+    def getActionList(self):
+        c = self.db.cursor()
+        c.execute('SELECT id, content, priority, state from Actions')
+        Alist = []
+        for g in c:
+            action = Action(g[1],g[2],g[3])
+            action.set_id(g[0])
+            Alist.append(action)
+        return Alist
+
     def completeAction(self, actionID):
         c = self.db.cursor()
         print(f"Checking validity for the action with the id: {actionID}...")
