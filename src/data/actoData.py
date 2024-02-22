@@ -1,16 +1,15 @@
 import sqlite3
 
 class Action():
-    def __init__(self, content, priority, state, actionID):
+    def __init__(self, content, priority, state):
         self.content = content
         self.priority = priority
         # self.deadline
         self.state = state
-        self.id = actionID
         
 
     def setId(self, id):
-        self.order_id = id
+        self.actionID = id
 
 
 
