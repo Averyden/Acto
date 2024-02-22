@@ -4,6 +4,7 @@ sys.dont_write_bytecode = True #* Don't write pycache.
 import tkinter as tk
 import tkinter.ttk as ttk
 from datetime import datetime
+from tkcalendar import DateEntry #* Exclusively for being able to handle dates and deadlines
 from data.actoData import actoData
 
 
@@ -11,27 +12,34 @@ from data.actoData import actoData
 
 class TkinterApp(ttk.Frame):
     def __init__(self,root):
+        #* For priority
+        self.emptyStar = "☆"
+        self.fullStar = "★"
+        self.priorityRating = "0"
+
+       
         self.root = root
         self.root.title("Acto")
         self.data = actoData()
+        
+        self.data.createTables() #* In case there are no tables.
 
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill="both", expand=True)
 
         self.uncompletedTabFrame = ttk.Frame(self.notebook)
         self.completedTabFrame = ttk.Frame(self.notebook)
+        self.createActionTabFrame = ttk.Frame(self.notebook)
 
         self.notebook.add(self.uncompletedTabFrame, text="Uncompleted Actions")
         self.notebook.add(self.completedTabFrame, text="Completed Actions")
+        self.notebook.add(self.createActionTabFrame, text="Create Action")
 
         self.buildCompletedUI()
         self.buildUncompletedUI()
+        self.buildCreationUI()
 
-        #* For priority
-        self.emptyStar = "☆"
-        self.fullStar = "★"
-        self.priorityRating = "0"
-
+      
     def updateLabels(self): #* Automatically run every time code is started so that things are added to the ma bobs
         pass 
 
@@ -77,44 +85,33 @@ class TkinterApp(ttk.Frame):
       
         
     def buildCreationUI(self):
-        self.Ui = tk.Frame(self)
-
         #* Variables for the action
         self.deadline = None #! Set to none by default
         self.priority = 0 #! Lowest by default
         self.content = "" #! Empty by default
 
-        self.actionContentEntry = ttk.Entry(self.Ui)
+        self.actionContentEntry = ttk.Entry(self.createActionTabFrame)
         self.actionContentEntry.grid(row=1, column=0, columnspan=2)
 
-        self.lblDeadlineHeader = ttk.Label(self.Ui, text="Set deadline (yyyy-mm-dd)")
+        self.lblDeadlineHeader = ttk.Label(self.createActionTabFrame, text="Set deadline (yyyy-mm-dd)")
         self.lblDeadlineHeader.grid(row=2, column=0)
 
-        self.deadlineEntry = ttk.Entry(self.Ui)
-        self.deadlineEntry.grid(row=2, column=1)
+        self.lblPriorityHeader = ttk.Label(self.createActionTabFrame, text="Set priority.")
+        self.lblPriorityHeader.grid(row=2, column=1, columnspan=3, padx=125)
 
-        self.lblPriorityHeader = ttk.Label(self.Ui, text="Set priority.")
-        self.lblPriorityHeader.grid(row=3, column=0)
+        self.cal = DateEntry(self.createActionTabFrame, datePattern="yyyy-mm-dd")
+        self.cal.grid(row=3, column=0)
 
-        self.cal = DateEntry(self.Ui, datePattern="yyyy-mm-dd")
-        self.cal.grid(row=2, column=0)
+        self.butSetDeadline = ttk.Button(self.createActionTabFrame, text="Set Deadline", command=self.setDeadline)
+        self.butSetDeadline.grid(row=4, column=0)
 
-        self.butSetDeadline = ttk.Button(self.Ui, text="Set Deadline", command=self.setDeadline)
-        self.butSetDeadline.grid(row=2, column=1)
-
-        self.but_list = []
-
-        for i in range(5):
-            self.starButton = ttk.Button(self.Ui, text=self.emptyStar, command=lambda idx=i: self.setStarRating(idx), width=0.15)
-            self.starButton.grid(row=4, column=1+i)
-            self.but_list.append(self.starButton)
+        self.slPriority = ttk.LabeledScale(self.createActionTabFrame, from_ = 0, to = 5)
+        #self.scPris.config(showvalue=1)
+        self.slPriority.grid(row = 3, column = 2)
 
         # Button to create action
-        self.createActionButton = ttk.Button(self.Ui, text="Create Action", command=self.createAction)
+        self.createActionButton = ttk.Button(self.createActionTabFrame, text="Create Action", command=self.createAction)
         self.createActionButton.grid(row=5, column=0, columnspan=7)
-
-        self.pack()
-        self.Ui.mainloop()
 
     def setDeadline(self):
         # Set self.deadline to the date entered in the entry
