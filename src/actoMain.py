@@ -29,6 +29,7 @@ class TkinterApp(ttk.Frame):
         self.uncompletedTabFrame = ttk.Frame(self.notebook)
         self.completedTabFrame = ttk.Frame(self.notebook)
         self.createActionTabFrame = ttk.Frame(self.notebook)
+        self.viewFrame = ttk.Frame(self.notebook)
 
 
         self.notebook.add(self.uncompletedTabFrame, text="Uncompleted Actions")
@@ -58,7 +59,13 @@ class TkinterApp(ttk.Frame):
         if len(curItem) > 0:
             self.lblCurrentSelectC.config(text = 'Currently selected action: {}'.format(curItem[0]))
       
-    def deleteSelectedAction(self):
+    def uncompleteAction(self):
+        curItem = self.db_viewCompleted.focus()
+        if len(self.db_viewCompleted.item(curItem)['values']) >= 2:
+            self.data.changeActionState(self.db_viewCompleted.item(curItem)['values'][0])
+        self.updateLabels()
+
+    def deleteSelectedAction(self): #! This one doesn't need a workaround, archives shouldn't be deleted. This isn't 1984 :)
         curItem = self.db_view.focus()
         if len(self.db_view.item(curItem)['values']) >= 2:
             self.data.deleteAction(self.db_view.item(curItem)['values'][0])
@@ -68,9 +75,9 @@ class TkinterApp(ttk.Frame):
         curItem = self.db_view.focus()
         if len(self.db_view.item(curItem)['values']) >= 2:
             self.data.changeActionState(self.db_view.item(curItem)['values'][0])
-        elif len(self.db_viewCompleted.item(curItem)['values']) >= 2:
-            self.data.changeActionState(self.db_viewCompleted.item(curItem)['values'][0])
         self.updateLabels()
+
+    
 
     def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
         l = self.data.getActionList()
@@ -185,7 +192,7 @@ class TkinterApp(ttk.Frame):
         self.butOpen.grid(row = 1, column = 2, columnspan=2)
 
         
-        self.butUncompleteAction = ttk.Button(self.butPanel, text = "Mark as uncompleted", command=self.completeAction)
+        self.butUncompleteAction = ttk.Button(self.butPanel, text = "Mark as uncompleted", command=self.uncompleteAction)
         self.butUncompleteAction.grid(row=4, column=4,columnspan=4, padx=25)
          
    
