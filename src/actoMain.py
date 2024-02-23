@@ -82,14 +82,18 @@ class TkinterApp(ttk.Frame):
     def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
         l = self.data.getActionList()
         print("Updating labels")
-        self.lblActions.config(text = 'There are {} uncompleted Actions'.format(len(l)))
+        uncomInt = 0
+        comInt = 0
+        self.lblActions.config(text = 'There are {} uncompleted Actions'.format())
         self.db_view.delete(*self.db_view.get_children())
         self.db_viewCompleted.delete(*self.db_viewCompleted.get_children())
         self.lblActionsC.config(text = 'There are {} completed Actions'.format(len(l)))
         for a in l:
             if a.state == 1: #* Only show uncompleted actions.
+                uncomInt += 1
                 self.db_view.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
             elif a.state == 2: #* Insert completed actions into the completed tab instead of the uncompleted.
+                comInt += 1
                 self.db_viewCompleted.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
 
     def getPriority(self, number):
