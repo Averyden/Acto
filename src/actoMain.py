@@ -71,12 +71,9 @@ class TkinterApp(ttk.Frame):
         self.db_view.delete(*self.db_view.get_children())
         self.db_viewCompleted.delete(*self.db_viewCompleted.get_children())
         for a in l:
-            print(a.state)
             if a.state == 1: #* Only show uncompleted actions.
-                print(f"Inserting action {a.actionID} into uncompleted treeview ({a.content})")
                 self.db_view.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
             elif a.state == 2: #* Insert completed actions into the completed tab instead of the uncompleted.
-                print(f"Inserting action {a.actionID} into completed treeview ({a.content})")
                 self.db_viewCompleted.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
 
     def getPriority(self, number):
