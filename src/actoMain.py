@@ -51,6 +51,12 @@ class TkinterApp(ttk.Frame):
         curItem = self.db_view.item(self.db_view.focus())['values']
         if len(curItem) > 0:
             self.lblCurrentSelect.config(text = 'Currently selected action: {}'.format(curItem[0]))
+
+    #! Really shitty fix, but I can't be bothered to try something else that could potentially kill the program.
+    def onActionSelectCompleted(self, event):
+        curItem = self.db_viewCompleted.item(self.db_viewCompleted.focus())['values']
+        if len(curItem) > 0:
+            self.lblCurrentSelectC.config(text = 'Currently selected action: {}'.format(curItem[0]))
       
     def deleteSelectedAction(self):
         curItem = self.db_view.focus()
@@ -62,6 +68,8 @@ class TkinterApp(ttk.Frame):
         curItem = self.db_view.focus()
         if len(self.db_view.item(curItem)['values']) >= 2:
             self.data.changeActionState(self.db_view.item(curItem)['values'][0])
+        elif len(self.db_viewCompleted.item(curItem)['values']) >= 2:
+            self.data.changeActionState(self.db_viewCompleted.item(curItem)['values'][0])
         self.updateLabels()
 
     def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
@@ -70,6 +78,7 @@ class TkinterApp(ttk.Frame):
         self.lblActions.config(text = 'There are {} uncompleted Actions'.format(len(l)))
         self.db_view.delete(*self.db_view.get_children())
         self.db_viewCompleted.delete(*self.db_viewCompleted.get_children())
+        self.lblActionsC.config(text = 'There are {} completed Actions'.format(len(l)))
         for a in l:
             if a.state == 1: #* Only show uncompleted actions.
                 self.db_view.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
@@ -167,11 +176,11 @@ class TkinterApp(ttk.Frame):
         self.dataPanel = ttk.Frame(self.completedTabFrame)
         self.butPanel = ttk.Frame(self.completedTabFrame)
         self.settingPanel = ttk.Frame(self.butPanel)
-        self.lblActions = ttk.Label(self.butPanel, text = 'There are {} completed Actions'.format(None))
-        self.lblActions.grid(row = 0, column = 0)
+        self.lblActionsC = ttk.Label(self.butPanel, text = 'There are {} completed Actions'.format(None))
+        self.lblActionsC.grid(row = 0, column = 0)
 
-        self.lblCurrentSelect = ttk.Label(self.butPanel, text="No currently selected Action.")
-        self.lblCurrentSelect.grid(row=0, column=2, columnspan=2, padx=25)
+        self.lblCurrentSelectC = ttk.Label(self.butPanel, text="No currently selected Action.")
+        self.lblCurrentSelectC.grid(row=0, column=2, columnspan=2, padx=25)
         self.butOpen = ttk.Button(self.butPanel, text="Open Action", command=None)
         self.butOpen.grid(row = 1, column = 2, columnspan=2)
 
@@ -182,7 +191,7 @@ class TkinterApp(ttk.Frame):
    
 
         self.db_viewCompleted = ttk.Treeview(self.dataPanel, column=("column1", "column2", "column3", "column4"), show='headings')
-        self.db_viewCompleted.bind("<ButtonRelease-1>", self.onActionSelect)
+        self.db_viewCompleted.bind("<ButtonRelease-1>", self.onActionSelectCompleted)
         self.db_viewCompleted.column("#1", width=30)
         self.db_viewCompleted.heading("#1", text="ID")
         self.db_viewCompleted.heading("#2", text="Action")
