@@ -18,10 +18,9 @@ class actoData():
         self.db = sqlite3.connect("src/data/storage/data.db")
 
     
-
-    def getCompletedActionList(self):
+    def getActionList(self):
         c = self.db.cursor()
-        c.execute('SELECT id, content, priority, state from Actions WHERE state = 2')
+        c.execute('SELECT id, content, priority, state from Actions')
         Alist = []
         for a in c:
             action = Action(a[1],a[2], a[3])
@@ -29,21 +28,14 @@ class actoData():
             Alist.append(action)
         return Alist
 
-    def getUncompletedActionList(self):
-        c = self.db.cursor()
-        c.execute('SELECT id, content, priority, state from Actions WHERE state = 1')
-        Alist = []
-        for a in c:
-            action = Action(a[1],a[2], a[3])
-            action.setId(a[0])
-            Alist.append(action)
-        return Alist
 
-    def completeAction(self, actionID):
+
+
+    def changeActionState(self, actionID):
         c = self.db.cursor()
         print(f"Checking validity for the action with the id: {actionID}...")
 
-        c.execute('''SELECT state, content FROM Actions WHERE id = ?''', [actionID]) #TODO: Remove the content parameter from the equation once whatever the fuck is not making it work is gone from the equation
+        c.execute('''SELECT state, content FROM Actions WHERE id = ?''', [actionID]) 
 
         actionState = c.fetchone()
         if actionState == None:
@@ -59,6 +51,8 @@ class actoData():
         elif actionState[0] == 1: #* If the state is set to "in progress"
             c.execute('''UPDATE Actions SET state = 2 WHERE id = ?''', [actionID])
             self.db.commit()
+        elif actionState[0] == 2:
+            c.execute('''UPDATE Actions SET state = 1 WHERE id = ?''', [actionID])
 
     def deleteAction(self, actionID):
         c = self.db.cursor()

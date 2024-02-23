@@ -34,11 +34,16 @@ class TkinterApp(ttk.Frame):
         self.notebook.add(self.uncompletedTabFrame, text="Uncompleted Actions")
         self.notebook.add(self.completedTabFrame, text="Completed Actions")
         self.notebook.add(self.createActionTabFrame, text="Create Action")
+        self.notebook.bind("<<NotebookTabChanged>>", self.notebookTabChange)
 
         self.buildCompletedUI()
         self.buildUncompletedUI()
         self.buildCreationUI()
 
+        self.updateLabels()
+
+
+    def notebookTabChange(self, event):
         self.updateLabels()
 
 
@@ -53,13 +58,26 @@ class TkinterApp(ttk.Frame):
             self.data.deleteAction(self.db_view.item(curItem)['values'][0])
         self.updateLabels()
 
-    def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
-        l = self.data.getUncompletedActionList()
+    def completeAction(self):
+        curItem = self.db_view.focus()
+        if len(self.db_view.item(curItem)['values']) >= 2:
+            self.data.changeActionState(self.db_view.item(curItem)['values'][0])
+        self.updateLabels()
 
+    def updateLabels(self): #TODO: Figure out how I could check the state variable for it, and then if it 
+        l = self.data.getActionList()
+        print("Updating labels")
         self.lblActions.config(text = 'There are {} uncompleted Actions'.format(len(l)))
         self.db_view.delete(*self.db_view.get_children())
+        self.db_viewCompleted.delete(*self.db_viewCompleted.get_children())
         for a in l:
-            self.db_view.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
+            print(a.state)
+            if a.state == 1: #* Only show uncompleted actions.
+                print(f"Inserting action {a.actionID} into uncompleted treeview ({a.content})")
+                self.db_view.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
+            elif a.state == 2: #* Insert completed actions into the completed tab instead of the uncompleted.
+                print(f"Inserting action {a.actionID} into completed treeview ({a.content})")
+                self.db_viewCompleted.insert("", tk.END, values=(a.actionID, a.content, "", self.getPriority(a.priority)))
 
     def getPriority(self, number):
         return "★" * number + "☆" * (5 - number)
@@ -79,11 +97,11 @@ class TkinterApp(ttk.Frame):
         self.butOpen.grid(row = 1, column = 2, columnspan=2, padx=25)
         
 
-        self.butNew = ttk.Button(self.butPanel, text = 'Create Action', command = self.buildCreationUI)
-        self.butNew.grid(row=4, column=2, columnspan = 2)
+        # self.butNew = ttk.Button(self.butPanel, text = 'Create Action', command = self.buildCreationUI)
+        # self.butNew.grid(row=4, column=2, columnspan = 2)
 
         
-        self.butCompleteActions = ttk.Button(self.butPanel, text = "Mark as completed", command=None)
+        self.butCompleteActions = ttk.Button(self.butPanel, text = "Mark as completed", command=self.completeAction)
         self.butCompleteActions.grid(row=4, column=4,columnspan=4)
          
    
@@ -108,7 +126,7 @@ class TkinterApp(ttk.Frame):
     def buildCreationUI(self):
         #* Variables for the action
         self.actionContentEntry = ttk.Entry(self.createActionTabFrame)
-        self.actionContentEntry.grid(row=1, column=0, columnspan=2)
+        self.actionContentEntry.grid(row=1, column=0, columnspan=7, pady=25)
 
         # self.lblDeadlineHeader = ttk.Label(self.createActionTabFrame, text="Set deadline (yyyy-mm-dd)")
         # self.lblDeadlineHeader.grid(row=2, column=0)
@@ -161,22 +179,22 @@ class TkinterApp(ttk.Frame):
         self.butOpen.grid(row = 1, column = 2, columnspan=2)
 
         
-        self.butUncompleteAction = ttk.Button(self.butPanel, text = "Mark as uncompleted", command=None)
+        self.butUncompleteAction = ttk.Button(self.butPanel, text = "Mark as uncompleted", command=self.completeAction)
         self.butUncompleteAction.grid(row=4, column=4,columnspan=4, padx=25)
          
    
 
-        self.db_view = ttk.Treeview(self.dataPanel, column=("column1", "column2", "column3", "column4"), show='headings')
-        #self.db_view.bind("<ButtonRelease-1>", self.on_guitar_selected)
-        self.db_view.column("#1", width=30)
-        self.db_view.heading("#1", text="ID")
-        self.db_view.heading("#2", text="Action")
-        self.db_view.heading("#3", text="Deadline")
-        self.db_view.heading("#4", text="Completed")
-        self.db_view["displaycolumns"]=("column1", "column2", "column3", "column4")
-        ysb = ttk.Scrollbar(self.dataPanel, command=self.db_view.yview, orient=tk.VERTICAL)
-        self.db_view.configure(yscrollcommand=ysb.set)
-        self.db_view.pack(side = tk.TOP)
+        self.db_viewCompleted = ttk.Treeview(self.dataPanel, column=("column1", "column2", "column3", "column4"), show='headings')
+        self.db_viewCompleted.bind("<ButtonRelease-1>", self.onActionSelect)
+        self.db_viewCompleted.column("#1", width=30)
+        self.db_viewCompleted.heading("#1", text="ID")
+        self.db_viewCompleted.heading("#2", text="Action")
+        self.db_viewCompleted.heading("#3", text="Deadline")
+        self.db_viewCompleted.heading("#4", text="Completed")
+        self.db_viewCompleted["displaycolumns"]=("column1", "column2", "column3", "column4")
+        ysb = ttk.Scrollbar(self.dataPanel, command=self.db_viewCompleted.yview, orient=tk.VERTICAL)
+        self.db_viewCompleted.configure(yscrollcommand=ysb.set)
+        self.db_viewCompleted.pack(side = tk.TOP)
 
         self.dataPanel.pack(side = tk.TOP)
         self.butPanel.pack(side = tk.LEFT)
