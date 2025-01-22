@@ -80,6 +80,8 @@ class TkinterApp(ttk.Frame):
         self.updateLabels()
 
     def getNumbers(self):
+        self.uncomInt = 0
+        self.comInt = 0
         l = self.data.getActionList()
         for a in l:
             if a.state == 1: #* Only show uncompleted actions.
